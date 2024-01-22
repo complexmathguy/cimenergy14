@@ -1,0 +1,157 @@
+/**
+ * ***************************************************************************** Turnstone Biologics
+ * Confidential
+ *
+ * <p>2018 Turnstone Biologics All Rights Reserved.
+ *
+ * <p>This file is subject to the terms and conditions defined in file 'license.txt', which is part
+ * of this source code package.
+ *
+ * <p>Contributors : Turnstone Biologics - General Release
+ * ****************************************************************************
+ */
+package com.occulue.europeanstandards.commongridmodelexchangestandard.dynamicsprofile.standardmodels.synchronousmachinedynamics.controller.command;
+
+import com.occulue.api.*;
+import com.occulue.command.*;
+import com.occulue.controller.*;
+import com.occulue.delegate.*;
+import com.occulue.entity.*;
+import com.occulue.exception.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * Implements Spring Controller command CQRS processing for entity SynchronousMachineDynamics.
+ *
+ * @author your_name_here
+ */
+@CrossOrigin
+@RestController
+@RequestMapping("/SynchronousMachineDynamics")
+public class SynchronousMachineDynamicsCommandRestController extends BaseSpringRestController {
+
+  /**
+   * Handles create a SynchronousMachineDynamics. if not key provided, calls create, otherwise calls
+   * save
+   *
+   * @param SynchronousMachineDynamics synchronousMachineDynamics
+   * @return CompletableFuture<UUID>
+   */
+  @PostMapping("/create")
+  public CompletableFuture<UUID> create(
+      @RequestBody(required = true) CreateSynchronousMachineDynamicsCommand command) {
+    CompletableFuture<UUID> completableFuture = null;
+    try {
+
+      completableFuture =
+          SynchronousMachineDynamicsBusinessDelegate.getSynchronousMachineDynamicsInstance()
+              .createSynchronousMachineDynamics(command);
+    } catch (Throwable exc) {
+      LOGGER.log(Level.WARNING, exc.getMessage(), exc);
+    }
+
+    return completableFuture;
+  }
+
+  /**
+   * Handles updating a SynchronousMachineDynamics. if no key provided, calls create, otherwise
+   * calls save
+   *
+   * @param SynchronousMachineDynamics synchronousMachineDynamics
+   * @return CompletableFuture<Void>
+   */
+  @PutMapping("/update")
+  public CompletableFuture<Void> update(
+      @RequestBody(required = true) UpdateSynchronousMachineDynamicsCommand command) {
+    CompletableFuture<Void> completableFuture = null;
+    try {
+      // -----------------------------------------------
+      // delegate the UpdateSynchronousMachineDynamicsCommand
+      // -----------------------------------------------
+      completableFuture =
+          SynchronousMachineDynamicsBusinessDelegate.getSynchronousMachineDynamicsInstance()
+              .updateSynchronousMachineDynamics(command);
+      ;
+    } catch (Throwable exc) {
+      LOGGER.log(
+          Level.WARNING,
+          "SynchronousMachineDynamicsController:update() - successfully update SynchronousMachineDynamics - "
+              + exc.getMessage());
+    }
+
+    return completableFuture;
+  }
+
+  /**
+   * Handles deleting a SynchronousMachineDynamics entity
+   *
+   * @param command ${class.getDeleteCommandAlias()}
+   * @return CompletableFuture<Void>
+   */
+  @DeleteMapping("/delete")
+  public CompletableFuture<Void> delete(
+      @RequestParam(required = true) UUID synchronousMachineDynamicsId) {
+    CompletableFuture<Void> completableFuture = null;
+    DeleteSynchronousMachineDynamicsCommand command =
+        new DeleteSynchronousMachineDynamicsCommand(synchronousMachineDynamicsId);
+
+    try {
+      SynchronousMachineDynamicsBusinessDelegate delegate =
+          SynchronousMachineDynamicsBusinessDelegate.getSynchronousMachineDynamicsInstance();
+
+      completableFuture = delegate.delete(command);
+      LOGGER.log(
+          Level.WARNING,
+          "Successfully deleted SynchronousMachineDynamics with key "
+              + command.getSynchronousMachineDynamicsId());
+    } catch (Throwable exc) {
+      LOGGER.log(Level.WARNING, exc.getMessage());
+    }
+
+    return completableFuture;
+  }
+
+  /**
+   * save SynchronousMachineDynamics on SynchronousMachineDynamics
+   *
+   * @param command AssignSynchronousMachineDynamicsToSynchronousMachineDynamicsCommand
+   */
+  @PutMapping("/assignSynchronousMachineDynamics")
+  public void assignSynchronousMachineDynamics(
+      @RequestBody AssignSynchronousMachineDynamicsToSynchronousMachineDynamicsCommand command) {
+    try {
+      SynchronousMachineDynamicsBusinessDelegate.getSynchronousMachineDynamicsInstance()
+          .assignSynchronousMachineDynamics(command);
+    } catch (Throwable exc) {
+      LOGGER.log(Level.WARNING, "Failed to assign SynchronousMachineDynamics", exc);
+    }
+  }
+
+  /**
+   * unassign SynchronousMachineDynamics on SynchronousMachineDynamics
+   *
+   * @param command UnAssignSynchronousMachineDynamicsFromSynchronousMachineDynamicsCommand
+   */
+  @PutMapping("/unAssignSynchronousMachineDynamics")
+  public void unAssignSynchronousMachineDynamics(
+      @RequestBody(required = true)
+          UnAssignSynchronousMachineDynamicsFromSynchronousMachineDynamicsCommand command) {
+    try {
+      SynchronousMachineDynamicsBusinessDelegate.getSynchronousMachineDynamicsInstance()
+          .unAssignSynchronousMachineDynamics(command);
+    } catch (Exception exc) {
+      LOGGER.log(Level.WARNING, "Failed to unassign SynchronousMachineDynamics", exc);
+    }
+  }
+
+  // ************************************************************************
+  // Attributes
+  // ************************************************************************
+  protected SynchronousMachineDynamics synchronousMachineDynamics = null;
+  private static final Logger LOGGER =
+      Logger.getLogger(SynchronousMachineDynamicsCommandRestController.class.getName());
+}

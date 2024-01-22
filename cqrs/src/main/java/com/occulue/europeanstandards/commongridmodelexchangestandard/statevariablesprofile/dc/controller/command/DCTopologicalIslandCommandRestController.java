@@ -1,0 +1,154 @@
+/**
+ * ***************************************************************************** Turnstone Biologics
+ * Confidential
+ *
+ * <p>2018 Turnstone Biologics All Rights Reserved.
+ *
+ * <p>This file is subject to the terms and conditions defined in file 'license.txt', which is part
+ * of this source code package.
+ *
+ * <p>Contributors : Turnstone Biologics - General Release
+ * ****************************************************************************
+ */
+package com.occulue.europeanstandards.commongridmodelexchangestandard.statevariablesprofile.dc.controller.command;
+
+import com.occulue.api.*;
+import com.occulue.command.*;
+import com.occulue.controller.*;
+import com.occulue.delegate.*;
+import com.occulue.entity.*;
+import com.occulue.exception.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * Implements Spring Controller command CQRS processing for entity DCTopologicalIsland.
+ *
+ * @author your_name_here
+ */
+@CrossOrigin
+@RestController
+@RequestMapping("/DCTopologicalIsland")
+public class DCTopologicalIslandCommandRestController extends BaseSpringRestController {
+
+  /**
+   * Handles create a DCTopologicalIsland. if not key provided, calls create, otherwise calls save
+   *
+   * @param DCTopologicalIsland dCTopologicalIsland
+   * @return CompletableFuture<UUID>
+   */
+  @PostMapping("/create")
+  public CompletableFuture<UUID> create(
+      @RequestBody(required = true) CreateDCTopologicalIslandCommand command) {
+    CompletableFuture<UUID> completableFuture = null;
+    try {
+
+      completableFuture =
+          DCTopologicalIslandBusinessDelegate.getDCTopologicalIslandInstance()
+              .createDCTopologicalIsland(command);
+    } catch (Throwable exc) {
+      LOGGER.log(Level.WARNING, exc.getMessage(), exc);
+    }
+
+    return completableFuture;
+  }
+
+  /**
+   * Handles updating a DCTopologicalIsland. if no key provided, calls create, otherwise calls save
+   *
+   * @param DCTopologicalIsland dCTopologicalIsland
+   * @return CompletableFuture<Void>
+   */
+  @PutMapping("/update")
+  public CompletableFuture<Void> update(
+      @RequestBody(required = true) UpdateDCTopologicalIslandCommand command) {
+    CompletableFuture<Void> completableFuture = null;
+    try {
+      // -----------------------------------------------
+      // delegate the UpdateDCTopologicalIslandCommand
+      // -----------------------------------------------
+      completableFuture =
+          DCTopologicalIslandBusinessDelegate.getDCTopologicalIslandInstance()
+              .updateDCTopologicalIsland(command);
+      ;
+    } catch (Throwable exc) {
+      LOGGER.log(
+          Level.WARNING,
+          "DCTopologicalIslandController:update() - successfully update DCTopologicalIsland - "
+              + exc.getMessage());
+    }
+
+    return completableFuture;
+  }
+
+  /**
+   * Handles deleting a DCTopologicalIsland entity
+   *
+   * @param command ${class.getDeleteCommandAlias()}
+   * @return CompletableFuture<Void>
+   */
+  @DeleteMapping("/delete")
+  public CompletableFuture<Void> delete(@RequestParam(required = true) UUID dCTopologicalIslandId) {
+    CompletableFuture<Void> completableFuture = null;
+    DeleteDCTopologicalIslandCommand command =
+        new DeleteDCTopologicalIslandCommand(dCTopologicalIslandId);
+
+    try {
+      DCTopologicalIslandBusinessDelegate delegate =
+          DCTopologicalIslandBusinessDelegate.getDCTopologicalIslandInstance();
+
+      completableFuture = delegate.delete(command);
+      LOGGER.log(
+          Level.WARNING,
+          "Successfully deleted DCTopologicalIsland with key "
+              + command.getDCTopologicalIslandId());
+    } catch (Throwable exc) {
+      LOGGER.log(Level.WARNING, exc.getMessage());
+    }
+
+    return completableFuture;
+  }
+
+  /**
+   * save DCTopologicalIsland on DCTopologicalIsland
+   *
+   * @param command AssignDCTopologicalIslandToDCTopologicalIslandCommand
+   */
+  @PutMapping("/assignDCTopologicalIsland")
+  public void assignDCTopologicalIsland(
+      @RequestBody AssignDCTopologicalIslandToDCTopologicalIslandCommand command) {
+    try {
+      DCTopologicalIslandBusinessDelegate.getDCTopologicalIslandInstance()
+          .assignDCTopologicalIsland(command);
+    } catch (Throwable exc) {
+      LOGGER.log(Level.WARNING, "Failed to assign DCTopologicalIsland", exc);
+    }
+  }
+
+  /**
+   * unassign DCTopologicalIsland on DCTopologicalIsland
+   *
+   * @param command UnAssignDCTopologicalIslandFromDCTopologicalIslandCommand
+   */
+  @PutMapping("/unAssignDCTopologicalIsland")
+  public void unAssignDCTopologicalIsland(
+      @RequestBody(required = true)
+          UnAssignDCTopologicalIslandFromDCTopologicalIslandCommand command) {
+    try {
+      DCTopologicalIslandBusinessDelegate.getDCTopologicalIslandInstance()
+          .unAssignDCTopologicalIsland(command);
+    } catch (Exception exc) {
+      LOGGER.log(Level.WARNING, "Failed to unassign DCTopologicalIsland", exc);
+    }
+  }
+
+  // ************************************************************************
+  // Attributes
+  // ************************************************************************
+  protected DCTopologicalIsland dCTopologicalIsland = null;
+  private static final Logger LOGGER =
+      Logger.getLogger(DCTopologicalIslandCommandRestController.class.getName());
+}

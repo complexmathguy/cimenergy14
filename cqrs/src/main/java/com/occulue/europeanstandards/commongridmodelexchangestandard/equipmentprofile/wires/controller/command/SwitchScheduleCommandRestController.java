@@ -1,0 +1,147 @@
+/**
+ * ***************************************************************************** Turnstone Biologics
+ * Confidential
+ *
+ * <p>2018 Turnstone Biologics All Rights Reserved.
+ *
+ * <p>This file is subject to the terms and conditions defined in file 'license.txt', which is part
+ * of this source code package.
+ *
+ * <p>Contributors : Turnstone Biologics - General Release
+ * ****************************************************************************
+ */
+package com.occulue.europeanstandards.commongridmodelexchangestandard.equipmentprofile.wires.controller.command;
+
+import com.occulue.api.*;
+import com.occulue.command.*;
+import com.occulue.controller.*;
+import com.occulue.delegate.*;
+import com.occulue.entity.*;
+import com.occulue.exception.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * Implements Spring Controller command CQRS processing for entity SwitchSchedule.
+ *
+ * @author your_name_here
+ */
+@CrossOrigin
+@RestController
+@RequestMapping("/SwitchSchedule")
+public class SwitchScheduleCommandRestController extends BaseSpringRestController {
+
+  /**
+   * Handles create a SwitchSchedule. if not key provided, calls create, otherwise calls save
+   *
+   * @param SwitchSchedule switchSchedule
+   * @return CompletableFuture<UUID>
+   */
+  @PostMapping("/create")
+  public CompletableFuture<UUID> create(
+      @RequestBody(required = true) CreateSwitchScheduleCommand command) {
+    CompletableFuture<UUID> completableFuture = null;
+    try {
+
+      completableFuture =
+          SwitchScheduleBusinessDelegate.getSwitchScheduleInstance().createSwitchSchedule(command);
+    } catch (Throwable exc) {
+      LOGGER.log(Level.WARNING, exc.getMessage(), exc);
+    }
+
+    return completableFuture;
+  }
+
+  /**
+   * Handles updating a SwitchSchedule. if no key provided, calls create, otherwise calls save
+   *
+   * @param SwitchSchedule switchSchedule
+   * @return CompletableFuture<Void>
+   */
+  @PutMapping("/update")
+  public CompletableFuture<Void> update(
+      @RequestBody(required = true) UpdateSwitchScheduleCommand command) {
+    CompletableFuture<Void> completableFuture = null;
+    try {
+      // -----------------------------------------------
+      // delegate the UpdateSwitchScheduleCommand
+      // -----------------------------------------------
+      completableFuture =
+          SwitchScheduleBusinessDelegate.getSwitchScheduleInstance().updateSwitchSchedule(command);
+      ;
+    } catch (Throwable exc) {
+      LOGGER.log(
+          Level.WARNING,
+          "SwitchScheduleController:update() - successfully update SwitchSchedule - "
+              + exc.getMessage());
+    }
+
+    return completableFuture;
+  }
+
+  /**
+   * Handles deleting a SwitchSchedule entity
+   *
+   * @param command ${class.getDeleteCommandAlias()}
+   * @return CompletableFuture<Void>
+   */
+  @DeleteMapping("/delete")
+  public CompletableFuture<Void> delete(@RequestParam(required = true) UUID switchScheduleId) {
+    CompletableFuture<Void> completableFuture = null;
+    DeleteSwitchScheduleCommand command = new DeleteSwitchScheduleCommand(switchScheduleId);
+
+    try {
+      SwitchScheduleBusinessDelegate delegate =
+          SwitchScheduleBusinessDelegate.getSwitchScheduleInstance();
+
+      completableFuture = delegate.delete(command);
+      LOGGER.log(
+          Level.WARNING,
+          "Successfully deleted SwitchSchedule with key " + command.getSwitchScheduleId());
+    } catch (Throwable exc) {
+      LOGGER.log(Level.WARNING, exc.getMessage());
+    }
+
+    return completableFuture;
+  }
+
+  /**
+   * save SwitchSchedules on SwitchSchedule
+   *
+   * @param command AssignSwitchSchedulesToSwitchScheduleCommand
+   */
+  @PutMapping("/addToSwitchSchedules")
+  public void addToSwitchSchedules(
+      @RequestBody(required = true) AssignSwitchSchedulesToSwitchScheduleCommand command) {
+    try {
+      SwitchScheduleBusinessDelegate.getSwitchScheduleInstance().addToSwitchSchedules(command);
+    } catch (Exception exc) {
+      LOGGER.log(Level.WARNING, "Failed to add to Set SwitchSchedules", exc);
+    }
+  }
+
+  /**
+   * remove SwitchSchedules on SwitchSchedule
+   *
+   * @param command RemoveSwitchSchedulesFromSwitchScheduleCommand
+   */
+  @PutMapping("/removeFromSwitchSchedules")
+  public void removeFromSwitchSchedules(
+      @RequestBody(required = true) RemoveSwitchSchedulesFromSwitchScheduleCommand command) {
+    try {
+      SwitchScheduleBusinessDelegate.getSwitchScheduleInstance().removeFromSwitchSchedules(command);
+    } catch (Exception exc) {
+      LOGGER.log(Level.WARNING, "Failed to remove from Set SwitchSchedules", exc);
+    }
+  }
+
+  // ************************************************************************
+  // Attributes
+  // ************************************************************************
+  protected SwitchSchedule switchSchedule = null;
+  private static final Logger LOGGER =
+      Logger.getLogger(SwitchScheduleCommandRestController.class.getName());
+}
